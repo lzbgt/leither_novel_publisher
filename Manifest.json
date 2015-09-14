@@ -1,0 +1,14 @@
+{
+"AppName":"publishApp",
+"ResFile":[
+	"js/jquery.min.js","js/angular.min.js","js/angular-ui-router.min.js","novel/novelRelease.js","resource.js","novel.js"
+	],
+"ResName":[
+	"jquery", "angular", "ui-router","novelRelease", "resource","novel"
+],
+"Res":{
+	"ID":"gwTLMKAl5kpqoLwlmeVzqmHzJNMuEzRTLfD0YHYB20g",
+	"PPT":"",
+	"URL":"http://121.43.154.122:1024"
+}
+}

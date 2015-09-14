@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8"/>
+<!--link rel="stylesheet" type="text/css" href="js/bootstrap.min.css">
+<script src="leitherapi.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/angular-ui-router.min.js"></script>
+<script src="novel/novelRelease.js"></script>
+<script src="resource.js"></script>
+<script src="novel.js"></script-->
+
+<script type="text/javascript">
+function getInitG() {
+        return {
+            //AppData
+            SystemBid: "6OkFeZw0sk3p0S0UrAPX0TJfhpabpgNIr-IgVGoRiZQ",
+            Log: true,
+            AppVer: "last",
+            AppName: "publishApp",
+            IPList: ["121.43.154.122:1024"],
+            AppBid: "gwTLMKAl5kpqoLwlmeVzqmHzJNMuEzRTLfD0YHYB20g",
+            Local: false,
+            userppt: "OP-FAwEBA1BQVAH_hgABBAECSUQBDAABBFR5cGUBBgABBFNpZ24BDAABCFZhbGlkaXR5Af-IAAAAEP-HBQEBBFRpbWUB_4gAAAAw_4YBK2Itd1FqNHc4Nmw1WG5sS0JQVlV0TzA5Unhsc2pzeWlXRVRENFRucW9IencA",
+			//AppData End
+            IPNum: 0
+        };
+    }
+	
+function getUrlPara(){ 
+		var url = location.href;  
+		var paraObj = {}  ;
+		if(url.indexOf("?")!=-1){
+		var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");  
+		for (i=0; j=paraString[i]; i++){  
+		paraObj[j.substring(0,j.indexOf("="))] = j.substring(j.indexOf("=")+1,j.length);  
+		}
+		}
+		return	paraObj;	
+	}	
+	
+function LoadLeither(I) {
+	localStorage.clear();
+	var urlParam= getUrlPara();
+	for( var name in urlParam) {
+	if(name=="ip"){
+	I["IPList"]=[urlParam[name]];	
+	}else{
+	I[name]=urlParam[name];
+	}
+	}  
+	console.log(I);
+    IP = I.IPList[I.IPNum]; //这样好象没检查ip
+    if (typeof (RunApp) == "function") {
+        RunApp(I, 0);
+        return;
+    }
+    leitherApi = localStorage["leitherApi"];
+    if (leitherApi) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.textContent = localStorage["leitherApi"];
+        document.getElementsByTagName("head")[0].appendChild(script);
+        RunApp(I, 0);
+        return;
+    }
+    LoadJsByIpAndName(IP, I.SystemBid, "LeitherApi", "last", function () {
+        RunApp(I, 0);
+    }, getFuncFail(I));
+	
+};
+function getFuncFail(I) {
+    return function () {
+        I.IPNum++;
+        if (I.IPNum >= I.IPList.length) {
+            console.log("Leither 初始化失败");
+            return;
+        }
+        LoadLeither(I);
+    };
+};
+
+function LoadJsByURL(url, Success, Fail) {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = "async";
+    if (script.readyState) { 
+        script.onreadystatechange = function () {
+            if (script.readyState == "loaded" || script.readyState == "complete") {
+                script.onreadystatechange = null;
+                Success();
+            };
+        };
+    } else {
+        script.onload = function () {
+            Success();
+        };
+    };
+    script.addEventListener("error", function () {
+        Fail();
+    });
+    script.src = url;
+    document.getElementsByTagName("head")[0].appendChild(script); 	//load Leither first
+};
+function LoadJsByIpAndName(ip, bid, name, ver, Success, Fail) {
+    url = 'http://' + ip + '/loadres?type=application/javascript&bid=' + bid + '&name=' + name + '&ver=' + ver;
+    LoadJsByURL(url, Success, Fail);
+};
+LoadLeither(getInitG());
+</script>
+</head>
+<title>LeitherApp</title>
+<body id="LeitherBody"></body>
+</html>
